@@ -5,7 +5,7 @@ infrastructure files.
 
 ## Common Makefile for Go projects
 
-(`Makefile.COMMON`)[Makefile.COMMON] provides common Makefile infrastructure
+[`Makefile.COMMON`](Makefile.COMMON) provides common Makefile infrastructure
 for several Prometheus components. This includes make tasks for downloading Go,
 setting up a self-contained build environment, fetching Go dependencies,
 building binaries, running tests, and doing release management. This file is
