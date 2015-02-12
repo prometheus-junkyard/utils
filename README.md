@@ -1,2 +1,3 @@
-# build_tools
-Shared build infrastructure for Prometheus projects
+# Build Tools
+
+This repository houses shared build infrastructure files.
