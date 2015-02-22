@@ -11,6 +11,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# THE AUTHORITATIVE VERSION OF THIS MAKEFILE LIVES IN:
+#
+#   https://github.com/prometheus/utils
+#
+# PLEASE MAKE ANY CHANGES THERE AND PROPAGATE THEM TO ALL PROMETHEUS
+# REPOSITORIES THAT ARE USING THIS MAKEFILE.
+#
 # This file provides common Makefile infrastructure for several Prometheus
 # components. This includes make tasks for downloading Go, setting up a
 # self-contained build environment, fetching Go dependencies, building
