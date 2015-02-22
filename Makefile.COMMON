@@ -86,6 +86,9 @@ dependencies-stamp: $(SRC) | $(SELFLINK)
 $(BINARY): $(GOCC) $(SRC) dependencies-stamp Makefile Makefile.COMMON
 	$(GO) build $(GOFLAGS) -o $@
 
+.PHONY: archive
+archive: $(ARCHIVE)
+
 $(ARCHIVE): $(BINARY)
 	tar -czf $@ $<
 
