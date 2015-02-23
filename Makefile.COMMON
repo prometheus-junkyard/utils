@@ -86,7 +86,7 @@ $(SELFLINK):
 	mkdir -p $(dir $@)
 	ln -s $(CURDIR) $@
 
-dependencies-stamp: $(SRC) | $(SELFLINK)
+dependencies-stamp: $(GOCC) $(SRC) | $(SELFLINK)
 	$(GO) get -d
 	touch $@
 
@@ -109,7 +109,7 @@ test: $(GOCC) dependencies-stamp
 	$(GO) test ./...
 
 .PHONY: format
-format:
+format: $(GOCC)
 	find . -iname '*.go' | egrep -v "^\./\.build|./generated|\./Godeps|\.(l|y)\.go" | xargs -n1 $(GOFMT) -w -s=true
 
 .PHONY: clean
