@@ -49,18 +49,19 @@ ifeq ($(GOOS),darwin)
 endif
 
 GO_VERSION ?= 1.4.2
-GOURL      ?= https://golang.org/dl
-GOPKG      ?= go$(GO_VERSION).$(GOOS)-$(GOARCH)$(RELEASE_SUFFIX).tar.gz
-GOPATH     := $(CURDIR)/.build/gopath
-GOCC       ?= $(GOROOT)/bin/go
-GO         ?= GOROOT=$(GOROOT) GOPATH=$(GOPATH) $(GOCC)
-GOFMT      ?= $(GOROOT)/bin/gofmt
 
 ifeq ($(shell type go >/dev/null && go version | sed 's/.*go\([0-9.]*\).*/\1/'), $(GO_VERSION))
 	GOROOT := $(shell go env GOROOT)
 else
 	GOROOT := $(CURDIR)/.build/go$(GO_VERSION)
 endif
+
+GOURL      ?= https://golang.org/dl
+GOPKG      ?= go$(GO_VERSION).$(GOOS)-$(GOARCH)$(RELEASE_SUFFIX).tar.gz
+GOPATH     := $(CURDIR)/.build/gopath
+GOCC       ?= $(GOROOT)/bin/go
+GO         ?= GOROOT=$(GOROOT) GOPATH=$(GOPATH) $(GOCC)
+GOFMT      ?= $(GOROOT)/bin/gofmt
 
 # Never honor GOBIN, should it be set at all.
 unexport GOBIN
