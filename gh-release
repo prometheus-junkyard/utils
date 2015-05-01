@@ -1,0 +1,73 @@
+#!/bin/bash
+#
+# This script reads the latest release on GitHub, checks out its
+# tag and runs a build command (defaults to `make archive`) with GOOS / GOARCH
+# combinations defined in the script. After that, it attaches the resulting
+# tarball to the release.
+
+set -eu -o pipefail
+
+TARGETS=("GOOS=linux  GOARCH=386" \
+         "GOOS=linux  GOARCH=arm" \
+         "GOOS=linux  GOARCH=amd64" \
+         "GOOS=darwin GOARCH=amd64")
+
+get_repo() {
+  local url=$(git config --get remote.origin.url)
+  if echo "$url" | grep -s '^https://' >/dev/null; then
+    echo "$url" | cut -d/ -f4,5
+  else
+    echo "$url" | cut -d: -f2 | cut -d. -f1
+  fi
+}
+
+fatal() {
+  echo "$@" >&2
+  exit 1
+}
+
+if [[ -z "${GITHUB_TOKEN:-}" ]] && [[ ! -e "$HOME/.github-token" ]]; then
+  fatal "Either GITHUB_TOKEN env var or ~/.github-token required"
+fi
+
+readonly TOKEN=${GITHUB_TOKEN-$(cat ~/.github-token)}
+readonly CMD=${*-make archive}
+readonly REPO=$(get_repo)
+[[ -z "$REPO" ]] && fatal "Couldn't find remote url, no git repo?"
+
+readonly NAME=$(echo "$REPO" | cut -d/ -f2)
+readonly OLD_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+readonly LATEST=$(curl -s -L "https://api.github.com/repos/$REPO/releases" | \
+  jq -r '.[0]' 2> /dev/null)
+
+readonly TAG=$(echo "$LATEST" | jq -r '.tag_name')
+[[ "$TAG" == "null" ]] \
+  && fatal "Couldn't find tag for latest release. Check if any releases exists."
+
+UPLOAD_URL=$(echo "$LATEST" | jq -r '.upload_url' | sed 's/{?name}//')
+
+trap 'git checkout -q $OLD_BRANCH' EXIT
+git checkout -q "$TAG" > /dev/null
+
+for vars in "${TARGETS[@]}"; do
+  declare $vars
+  name="$NAME-$TAG.$GOOS-$GOARCH.tar.gz"
+  if echo "$LATEST" | jq -e ".assets[]|select(.name == \"$name\")" > /dev/null
+  then
+    echo "Asset $name already exists, skipping"
+    continue
+  fi
+  echo "Building $name"
+  make clean
+  GOOS=$GOOS GOARCH=$GOARCH $CMD
+  [ -e "$name" ] \
+    || fatal "Build artifact not found. Make sure build command builds $name."
+
+  status=$(curl -s -o /dev/null -H 'Content-type: application/gzip' \
+    -u "$TOKEN:x-oauth-basic" "$UPLOAD_URL?name=$name" \
+    --data-binary "@$name" -w '%{http_code}')
+
+  [[ "$status" == "201" ]] \
+    || fatal "Couldn't upload $name, status code $status"
+done

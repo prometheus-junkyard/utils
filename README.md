@@ -19,3 +19,22 @@ Some of the variables defined in this Makefile are defined conditionally (using
 '?'), which allows the project's main Makefile to override any of these
 settings, if needed. The including Makefile may define any number of extra
 targets that are specific to that project.
+
+## gh-release
+
+[`gh-release`](gh-release) reads the latest release on GitHub, checks out its
+tag and runs a build command (defaults to `make archive`) with `GOOS` / `GOARCH`
+combinations defined in the script. After that, it attaches the resulting
+tarball to the release.
+
+For authentication a [GitHub Personal Access Token](https://github.com/settings/applications)
+is required. This can be provided via the `GITHUB_TOKEN` env variable or written to
+`~/.github-token`.
+
+To build a new release, you need to
+
+1. Bump version in Makefile and commit the changes
+2. Run `make tag` to tag and push the current revision
+3. Create a [GitHub release](https://help.github.com/articles/creating-releases/)
+   for the new tag
+4. Run `gh-release path/to/repo [optional-build-command]`
