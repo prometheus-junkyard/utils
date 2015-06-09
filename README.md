@@ -33,8 +33,9 @@ is required. This can be provided via the `GITHUB_TOKEN` env variable or written
 
 To build a new release, you need to
 
-1. Bump version in Makefile and commit the changes
-2. Run `make tag` to tag and push the current revision
-3. Create a [GitHub release](https://help.github.com/articles/creating-releases/)
+1. Change to the repo you want to create a release from
+2. Bump version in Makefile and commit the changes
+3. Run `make tag` to tag and push the current revision
+4. Create a [GitHub release](https://help.github.com/articles/creating-releases/)
    for the new tag
-4. Run `gh-release path/to/repo [optional-build-command]`
+5. Run `gh-release [optional-build-command]`
