@@ -97,7 +97,7 @@ $(BINARY): $(GOCC) $(SRC) dependencies-stamp Makefile Makefile.COMMON
 archive: $(ARCHIVE)
 
 $(ARCHIVE): $(BINARY)
-	tar --owner=root --group=root -czf $@ $<
+	tar -czf $@ $<
 
 .PHONY: tag
 tag:
