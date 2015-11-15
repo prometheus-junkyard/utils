@@ -80,7 +80,7 @@ $(GOCC):
 	@echo
 	@sleep 5
 	mkdir -p $(GOROOT)
-	curl -L $(GOURL)/$(GOPKG) | tar -C $(GOROOT) --strip 1 -xz
+	curl -L $(GOURL)/$(GOPKG) | tar -C $(GOROOT) --strip 1 -xzf -
 
 $(SELFLINK):
 	mkdir -p $(dir $@)
