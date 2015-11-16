@@ -79,8 +79,11 @@ $(GOCC):
 	@echo Abort now if you want to manually install it system-wide instead.
 	@echo
 	@sleep 5
-	mkdir -p $(GOROOT)
-	curl -L $(GOURL)/$(GOPKG) | tar -C $(GOROOT) --strip 1 -xz
+	mkdir -p .build
+	# The archive contains a single directory called 'go/'.
+	curl -L $(GOURL)/$(GOPKG) | tar -C .build -xzf -
+	rm -rf $(GOROOT)
+	mv .build/go $(GOROOT)
 
 $(SELFLINK):
 	mkdir -p $(dir $@)
@@ -97,7 +100,7 @@ $(BINARY): $(GOCC) $(SRC) dependencies-stamp Makefile Makefile.COMMON
 archive: $(ARCHIVE)
 
 $(ARCHIVE): $(BINARY)
-	tar --owner=root --group=root -czf $@ $<
+	tar -czf $@ $<
 
 .PHONY: tag
 tag:
