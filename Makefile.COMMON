@@ -54,13 +54,13 @@ GOPATH     := $(CURDIR)/.build/gopath
 ifeq ($(shell command -v "go" >/dev/null && go version | sed -e 's/^[^0-9.]*\([0-9.]*\).*/\1/'), $(GO_VERSION))
 	GOCC   ?= $(shell command -v "go")
 	GOFMT  ?= $(shell command -v "gofmt")
-	GO     ?= GOPATH=$(GOPATH) $(GOCC)
 else
 	GOROOT ?= $(CURDIR)/.build/go$(GO_VERSION)
 	GOCC   ?= $(GOROOT)/bin/go
 	GOFMT  ?= $(GOROOT)/bin/gofmt
-	GO     ?= GOROOT=$(GOROOT) GOPATH=$(GOPATH) $(GOCC)
 endif
+
+GO ?= GOARCH=$(GOARCH) GOOS=$(GOOS) GOROOT=$(GOROOT) GOPATH=$(GOPATH) $(GOCC)
 
 # Never honor GOBIN, should it be set at all.
 unexport GOBIN
