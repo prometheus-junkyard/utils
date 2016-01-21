@@ -98,11 +98,11 @@ tag:
 
 .PHONY: test
 test: $(GOCC) $(DEPENDENCIES)
-	$(GO) test ./...
+	$(GO) test $$($(GO) list ./... | grep -v /vendor/)
 
 .PHONY: format
 format: $(GOCC)
-	find . -iname '*.go' | egrep -v "^\./\.build|./generated|\./Godeps|\.(l|y)\.go" | xargs -n1 $(GOFMT) -w -s=true
+	find . -iname '*.go' | egrep -v "^\./\.build|./generated|\./vendor|\.(l|y)\.go" | xargs -n1 $(GOFMT) -w -s=true
 
 .PHONY: clean
 clean:
