@@ -45,7 +45,7 @@ readonly TAG=$(echo "$LATEST" | jq -r '.tag_name')
 [[ "$TAG" == "null" ]] \
   && fatal "Couldn't find tag for latest release. Check if any releases exists."
 
-UPLOAD_URL=$(echo "$LATEST" | jq -r '.upload_url' | sed 's/{?name}//')
+UPLOAD_URL=$(echo "$LATEST" | jq -r '.upload_url' | sed 's/{?name.*}//')
 
 trap 'git checkout -q $OLD_BRANCH' EXIT
 git checkout -q "$TAG" > /dev/null
